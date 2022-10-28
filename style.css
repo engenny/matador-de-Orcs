@@ -42,6 +42,11 @@ html {
 .score h1 {
     font-weight: bold;
     font-size: 1.6rem;
+    color: white;
+}
+
+.percentage {
+    color: white;
 }
 
 .life-bar {
@@ -59,6 +64,10 @@ html {
 
 .life-bar .life.danger {
     background-color: red;
+}
+
+.caracterIcon {
+    height: 100%;
 }
 
 /* Área do Resultado */

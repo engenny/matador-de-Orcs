@@ -12,6 +12,9 @@
         <div class="box">
             <div class="panel scores">
                 <div class="score">
+                    <div class="caracterIcon" v-if="caracter">
+                        <img src="warrior.gif" height="200px"/>
+                    </div>
                     <h1>Guerreiro</h1>
                     <div class="life-bar">
                         <div class="life"
@@ -19,11 +22,14 @@
                             :style="{width: playerLife + '%'}">
                         </div>
                     </div>
-                    <div>{{ playerLife }}%</div>
+                    <div class="percentage">{{ playerLife }}%</div>
                 </div>
             </div>
             <div class="panel scores">
             <div class="score">
+                <div class="caracterIcon" v-if="caracter">
+                    <img src="orc.gif"/>
+                </div>
                     <h1>Orc</h1>
                     <div class="life-bar">
                         <div class="life"
@@ -31,7 +37,7 @@
                             :style="{width: dragLife + '%'}">
                         </div>
                     </div>
-                    <div>{{ dragLife }}%</div>
+                    <div class="percentage">{{ dragLife }}%</div>
             </div>
         </div>
     </div>
@@ -57,7 +63,8 @@
                 </template>
 
                 <button v-else  @click="startGame"
-                class="btn new-game">Inicar luta</button>
+                    class="btn new-game">Inicar luta
+                </button>
             </div>
         </div>
         <div  v-if="logs.length"
@@ -78,7 +85,8 @@
                 playerLife: 100,
                 dragLife: 100,
                 logs: [],
-                audio: new Audio('music.mp3')
+                audio: new Audio('music.mp3'),
+                caracter: false
             },
             computed: {
                 hasResults () {
@@ -88,6 +96,7 @@
             methods: {
                 startGame () {
                     this.musicGame()
+                    this.showCaracter()
                     this.running = true
                     this.playerLife = 100
                     this.dragLife = 100
@@ -128,6 +137,9 @@
                     this.running = false
                     this.audio.pause();
                     this.audio.currentTime = 0;
+                },
+                showCaracter () {
+                    this.caracter = true
                 }
             },
             watch: {

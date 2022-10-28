@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matador de Orcs</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="panel scores">
+            <div class="score">
+                <h1>Guerreiro</h1>
+                <div class="life-bar">
+                    <div class="life"
+                        :class="{danger: playerLife < 20}"
+                        :style="{width: playerLife + '%'}">
+                    </div>
+                </div>
+                <div>{{ playerLife }}%</div>
+            </div>
+        </div>
+        <div class="panel scores">
+        <div class="score">
+                <h1>Orc</h1>
+                <div class="life-bar">
+                    <div class="life"
+                        :class="{danger: dragLife < 20}"
+                        :style="{width: dragLife + '%'}">
+                    </div>
+                </div>
+                <div>{{ dragLife }}%</div>
+            </div>
+        </div>
+        <div v-if="hasResults"class="panel result">
+            <div v-if="dragLife == 0"class="win">Você matou o Orc! Próxima aventura virá</div>
+            <div v-else="playerLife == 0" class="lose">Guerreiro eliminado!</div>
+        </div>
+        <div class="panel buttons">
+            <template v-if="running">
+                <button @click="attack(false)" class="btn attack">
+                    Ataque
+                </button>
+                <button  @click="attack(true)" class="btn especial-attack">
+                    Ataque Especial
+                </button>
+                <button @click="healAndHurt" class="btn heal">
+                    Curar
+                </button>
+                <button @click="running=false" class="btn give-up">
+                    Desistir
+                </button>
+            </template>
+
+            <button v-else  @click="startGame"
+            class="btn new-game">Inicar luta</button>
+        </div>
+        <div  v-if="logs.length"
+            class="panel logs">
+            <ul>
+                <li v-for="log in logs"
+                    :class="log.cls"
+                    class="log"> {{ log.text }}
+                </li>
+            </ul>
+        </div>
+    </div>
+<script>
+    new Vue({
+        el: '#app',
+            data: {
+                running: false,
+                playerLife: 100,
+                dragLife: 100,
+                logs: []
+            },
+            computed: {
+                hasResults () {
+                    return this.playerLife == 0 || this.dragLife == 0
+                }
+            },
+            methods: {
+                startGame () {
+                    this.running = true
+                    this.playerLife = 100
+                    this.dragLife = 100
+                    this.logs = []
+                },
+                attack (especial) {
+                    this.hurt('dragLife', 5, 10, especial, 'guerreiro', 'Mostro', 'player') //meus params de hurt
+                    if(this.dragLife > 0) {
+                        this.hurt('playerLife', 7, 12, false, 'Orc', 'guerreiro', 'drag')
+                    }
+                },
+                hurt (prop, min, max, especial, source, target, cls) { // meus atributos estão settados logo a cima
+                    const plus = especial ? 5 : 0
+                    const hurt = this.getRandom(min + plus, max + plus)
+                    this[prop] = Math.max(this[prop] - hurt,0)// para nunca ser negativo, parando no 0
+                    this.registerLog(`${source} atingiu ${target} com ${hurt}.`, cls) // quem, atingiu quem, com?
+                },
+                healAndHurt () {
+                    this.heal(10, 15)
+                    this.hurt('playerLife', 7, 12, false, 'Orc', 'guerreiro', 'drag') // false pra especial 
+                },
+                heal (min, max) {
+                    const heal = this.getRandom(min, max)
+                    this.playerLife = Math.min(this.playerLife + heal, 100)
+                    this.registerLog(`guerreiro ganhou força de ${heal}.`, 'player')
+                },
+                getRandom (min, max) { //  |montando os valores aletórios
+                    const value = Math.random() * (max - min) + min
+                    return Math.round(value)
+                },
+                registerLog (text, cls) {
+                    this.logs.unshift({ text, cls }) //unshift signfica que eu sempre vou colocar por primeiro posição
+                }
+            },
+            watch: {
+                hasResults(value) {
+                    if (value) this.running = false
+                }
+            }
+    })
+</script>
+</body>
+</html>

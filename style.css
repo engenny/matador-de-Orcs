@@ -3,6 +3,8 @@
 html {
     font-family: 'Montserrat', sans-serif;
     background-image: url("https://images3.alphacoders.com/529/52929.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #app {
@@ -10,9 +12,16 @@ html {
     flex-direction: column;
 }
 
+.box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 .panel {
     margin: 10px;
     padding: 20px;
+    width: 300%;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -57,6 +66,7 @@ html {
 .result {
     display: flex;
     justify-content: center;
+    width: 100%;
     font-size: 1.3rem;
     font-weight: 600;
 }
@@ -71,9 +81,17 @@ html {
 
 /* Área dos Botões (Controle do Jogo) */
 
+.boxBtn {
+    margin: 0px 300px;
+}
+
 .buttons {
     display: flex;
     justify-content: center;
+    margin: 10px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .btn {

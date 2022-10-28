@@ -9,55 +9,59 @@
 </head>
 <body>
     <div id="app">
-        <div class="panel scores">
+        <div class="box">
+            <div class="panel scores">
+                <div class="score">
+                    <h1>Guerreiro</h1>
+                    <div class="life-bar">
+                        <div class="life"
+                            :class="{danger: playerLife < 20}"
+                            :style="{width: playerLife + '%'}">
+                        </div>
+                    </div>
+                    <div>{{ playerLife }}%</div>
+                </div>
+            </div>
+            <div class="panel scores">
             <div class="score">
-                <h1>Guerreiro</h1>
-                <div class="life-bar">
-                    <div class="life"
-                        :class="{danger: playerLife < 20}"
-                        :style="{width: playerLife + '%'}">
+                    <h1>Orc</h1>
+                    <div class="life-bar">
+                        <div class="life"
+                            :class="{danger: dragLife < 20}"
+                            :style="{width: dragLife + '%'}">
+                        </div>
                     </div>
-                </div>
-                <div>{{ playerLife }}%</div>
+                    <div>{{ dragLife }}%</div>
             </div>
         </div>
-        <div class="panel scores">
-        <div class="score">
-                <h1>Orc</h1>
-                <div class="life-bar">
-                    <div class="life"
-                        :class="{danger: dragLife < 20}"
-                        :style="{width: dragLife + '%'}">
-                    </div>
-                </div>
-                <div>{{ dragLife }}%</div>
-            </div>
-        </div>
-        <div v-if="hasResults"class="panel result">
+    </div>
+        <div v-if="hasResults"class="result">
             <div v-if="dragLife == 0"class="win">Você matou o Orc! Próxima aventura virá</div>
             <div v-else="playerLife == 0" class="lose">Guerreiro eliminado!</div>
         </div>
-        <div class="panel buttons">
-            <template v-if="running">
-                <button @click="attack(false)" class="btn attack">
-                    Ataque
-                </button>
-                <button  @click="attack(true)" class="btn especial-attack">
-                    Ataque Especial
-                </button>
-                <button @click="healAndHurt" class="btn heal">
-                    Curar
-                </button>
-                <button @click="running=false" class="btn give-up">
-                    Desistir
-                </button>
-            </template>
+        <div class="boxBtn">
+            <div class="buttons">
+                <template v-if="running">
+                    <button @click="attack(false)" class="btn attack">
+                        Ataque
+                    </button>
+                    <button  @click="attack(true)" class="btn especial-attack">
+                        Ataque Especial
+                    </button>
+                    <button @click="healAndHurt" class="btn heal">
+                        Curar
+                    </button>
+                    <button @click="musicGameStop" class="btn give-up">
+                        Desistir
+                    </button>
+                </template>
 
-            <button v-else  @click="startGame"
-            class="btn new-game">Inicar luta</button>
+                <button v-else  @click="startGame"
+                class="btn new-game">Inicar luta</button>
+            </div>
         </div>
         <div  v-if="logs.length"
-            class="panel logs">
+            class="logs">
             <ul>
                 <li v-for="log in logs"
                     :class="log.cls"
@@ -73,7 +77,8 @@
                 running: false,
                 playerLife: 100,
                 dragLife: 100,
-                logs: []
+                logs: [],
+                audio: new Audio('music.mp3')
             },
             computed: {
                 hasResults () {
@@ -82,6 +87,7 @@
             },
             methods: {
                 startGame () {
+                    this.musicGame()
                     this.running = true
                     this.playerLife = 100
                     this.dragLife = 100
@@ -114,6 +120,14 @@
                 },
                 registerLog (text, cls) {
                     this.logs.unshift({ text, cls }) //unshift signfica que eu sempre vou colocar por primeiro posição
+                },
+                musicGame () {
+                    this.audio.play();
+                },
+                musicGameStop () {
+                    this.running = false
+                    this.audio.pause();
+                    this.audio.currentTime = 0;
                 }
             },
             watch: {
